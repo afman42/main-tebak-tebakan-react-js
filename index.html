@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tebak - Tebakan Acak</title>
+	<link rel="stylesheet" type="text/css" href="./style.css">
+	<link rel="stylesheet" type="text/css" href="./normalize.css">
+	<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+	<script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
+</head>
+<body>
+	<div id="root"></div>
+	<script type="text/babel">
+		function App(){
+			let dataResult = {
+				hasil: '',
+				bool: false,
+				pesan: ''
+			}
+			const [data, setData] = React.useState(['Aku','Abang','Orang Tua','Kakak']);
+			const [result, setResult] = React.useState(dataResult);
+			let shuffled = data
+			    .map(value => ({ value, sort: Math.random() }))
+			    .sort((a, b) => a.sort - b.sort)
+			    .map(({ value }) => value)
+
+			let randomData = data[Math.floor(Math.random() * data.length)];
+			function clickBox(item){
+				console.log(item)
+				if(item === randomData){
+					result.hasil = "Menang";
+				}else{
+					result.hasil = "Kalah";
+				}
+				result.pesan = `Kotak isinya ${item} dan tulisan tadi ${randomData}`
+				result.bool = true
+				setResult(prev => ({
+					...result	
+				}))
+			}
+			function resetFunction(){
+				setResult(dataResult)	
+			}
+
+			return (
+				<div className="container">
+					{ result.bool ? (
+						<div className="box-column">
+							<h1 className="text-center-1">{ result.pesan}</h1>
+							<h3 className="text-center">{ result.hasil}</h3>
+							<button className="button-red" onClick={() => resetFunction()}>Mulai</button>
+						</div>
+					) : (
+						<React.Fragment>
+							<h1>Main Tebak Tebakan</h1>
+							<p>
+								Cari Kotak yang isinya bernama <span style={{ textDecoration:'underline'}}>{ randomData }</span>
+							</p>
+							<div className="box-center">
+								{ shuffled.map((item,index) => (
+									<div key={index} className="box" onClick={() => clickBox(item)}>
+										<div>{index + 1}</div>
+										{ console.log(item) }
+									</div>
+								))}
+							</div>
+						</React.Fragment>
+					)}
+				</div>
+			)
+		}
+		const root = ReactDOM.createRoot(document.getElementById('root'))
+		root.render(<App />);
+	</script>
+</body>
+</html>
